@@ -429,24 +429,79 @@
     </div>
   </section>
 
-  <!-- STEALTH TEASER (will be fully replaced in M7) -->
+  <!-- STEALTH DEEP DIVE + INTERACTIVE RCS VISUALIZER (MILESTONE 7) -->
   <section id="stealth" class="max-w-screen-2xl mx-auto px-6 md:px-12 py-20 border-t border-[#22262e]">
-    <div class="max-w-3xl">
+    <div class="max-w-5xl">
       <div class="section-label mb-3">CHAPTER 03 — THE MOST CONTESTED CLAIM</div>
       <h2 class="section-header font-semibold tracking-tighter mb-6">The Stealth Equation</h2>
-      
-      <div class="editorial-text space-y-6">
-        <p>The Su-57 incorporates planform alignment, serrated edges, radar-absorbent materials, and internal weapons bays. However, <span class="text-[#c5a36e] font-medium">every public figure regarding its radar cross-section is an estimate</span> — derived from patents, photography, and analyst interpretation. No independently verified measurement has been released.</p>
+
+      <div class="grid lg:grid-cols-12 gap-x-10 gap-y-10">
+        <!-- Narrative -->
+        <div class="lg:col-span-5 editorial-text space-y-5 text-[#c8c5be]">
+          <p>The Su-57 incorporates planform alignment, serrated edges, radar-absorbent materials (RAM), and internal weapons bays. These features achieve a major reduction from fourth-generation baselines (Su-27 family often cited 4–20 m²).</p>
+          
+          <p><span class="text-[#c5a36e] font-medium">Every public RCS number is an estimate.</span> The primary documented source is Russian patent №2502643 (Sukhoi), which described a design goal of reducing average RCS to roughly 0.1–1 m² versus a Su-27 baseline of ~10–15 m².</p>
+
+          <div class="p-4 bg-[#111317] border border-[#3f2a1e] rounded-2xl text-sm">
+            <div class="flex items-center gap-2 text-[#c5a36e] text-xs mb-2">
+              <i class="fa-solid fa-exclamation-triangle"></i>
+              <span class="font-semibold tracking-wider">CRITICAL CAVEAT</span>
+            </div>
+            <p class="text-[#a1a1aa]">No independently verified public radar range measurements exist for the production Su-57. Western analyst estimates for frontal aspect typically range <strong>0.1–1 m²</strong>. Rear aspect is significantly higher. Low-frequency radars remain a notable vulnerability due to aircraft size.</p>
+          </div>
+        </div>
+
+        <!-- Interactive RCS Canvas -->
+        <div class="lg:col-span-7">
+          <div class="premium-card rounded-3xl p-6 md:p-8">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-sm font-semibold">RCS SIGNATURE VISUALIZER</div>
+                <div class="text-xs text-[#a1a1aa]">Illustrative model based on public estimates • Drag slider or click presets</div>
+              </div>
+              <div id="rcs-value" class="text-right">
+                <div class="text-xs text-[#a1a1aa]">EST. RCS @ ANGLE</div>
+                <div class="text-3xl font-semibold tabular-nums text-[#c5a36e]"><span id="rcs-number">0.42</span> m²</div>
+              </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="relative bg-[#050505] rounded-2xl overflow-hidden border border-[#22262e]">
+              <canvas id="rcs-canvas" width="620" height="420" class="w-full max-w-full mx-auto"></canvas>
+              
+              <!-- Angle control overlay -->
+              <div class="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur px-4 py-3 rounded-xl border border-[#22262e]">
+                <div class="flex items-center gap-4">
+                  <div class="text-xs font-mono w-9 tabular-nums text-[#c5a36e]" id="angle-readout">000°</div>
+                  <input type="range" id="rcs-angle" min="0" max="360" value="0" step="1" class="flex-1 accent-[#c5a36e]">
+                  <div class="flex gap-1">
+                    <button onclick="setRCSAngle(0)" class="px-2 py-0.5 text-[10px] bg-[#22262e] hover:bg-[#333] rounded">FRONT</button>
+                    <button onclick="setRCSAngle(90)" class="px-2 py-0.5 text-[10px] bg-[#22262e] hover:bg-[#333] rounded">SIDE</button>
+                    <button onclick="setRCSAngle(180)" class="px-2 py-0.5 text-[10px] bg-[#22262e] hover:bg-[#333] rounded">REAR</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comparison toggles -->
+            <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="show-f22" checked class="accent-[#4aa3e0]">
+                <span class="text-[#4aa3e0]">F-22 (~0.0005 m²)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="show-j20" checked class="accent-[#4aa3e0]">
+                <span class="text-[#4aa3e0]">J-20 (est. frontal ~0.1–0.5 m²)</span>
+              </label>
+              <div class="text-[#666] text-[10px] ml-auto">Model is illustrative only — not measured data</div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="mt-6 inline-flex items-center gap-2 px-5 py-3 bg-[#111317] border border-[#3f2a1e] rounded-2xl text-sm">
-        <span class="flag-badge">ESTIMATED</span>
-        <span class="text-[#c5a36e]">Frontal RCS commonly cited between <span class="font-semibold">0.1–1 m²</span></span>
+      <div class="mt-8 text-xs text-[#a1a1aa] max-w-3xl">
+        Sources: Sukhoi patent №2502643, analyses by Piotr Butowski, Jane’s, The War Zone. Production aircraft improved surface quality over early prototypes, but rear-aspect and low-frequency performance remain acknowledged limitations in open literature.
       </div>
-    </div>
-
-    <div class="mt-12 text-xs text-[#a1a1aa] max-w-md">
-      Full interactive RCS signature visualizer arriving in the next milestone.
     </div>
   </section>
 
@@ -1035,6 +1090,186 @@
       updateScores();
     }
 
+    // ============================================
+    // MILESTONE 7: RCS SIGNATURE CANVAS VISUALIZER
+    // ============================================
+    let rcsCanvas, rcsCtx, currentAngle = 0;
+    let rcsAnimationFrame = null;
+
+    function drawRCSCanvas(angleDeg) {
+      if (!rcsCanvas || !rcsCtx) return;
+
+      const w = rcsCanvas.width;
+      const h = rcsCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2 - 10;
+
+      rcsCtx.fillStyle = '#050505';
+      rcsCtx.fillRect(0, 0, w, h);
+
+      // Grid
+      rcsCtx.strokeStyle = '#1a1f28';
+      rcsCtx.lineWidth = 1;
+      for (let r = 60; r <= 220; r += 40) {
+        rcsCtx.beginPath();
+        rcsCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        rcsCtx.stroke();
+      }
+
+      // Angle lines
+      for (let a = 0; a < 360; a += 30) {
+        const rad = (a - 90) * Math.PI / 180;
+        rcsCtx.beginPath();
+        rcsCtx.moveTo(cx, cy);
+        rcsCtx.lineTo(cx + Math.cos(rad) * 230, cy + Math.sin(rad) * 230);
+        rcsCtx.stroke();
+      }
+
+      // Aircraft silhouette (highly simplified top-down Su-57)
+      rcsCtx.save();
+      rcsCtx.translate(cx, cy);
+      rcsCtx.rotate((angleDeg - 90) * Math.PI / 180); // nose points up at 0°
+
+      // Fuselage + wings (very rough)
+      rcsCtx.fillStyle = '#1f252f';
+      rcsCtx.strokeStyle = '#4a5568';
+      rcsCtx.lineWidth = 1.5;
+
+      // Body
+      rcsCtx.beginPath();
+      rcsCtx.ellipse(0, 0, 38, 110, 0, 0, Math.PI * 2);
+      rcsCtx.fill();
+      rcsCtx.stroke();
+
+      // Wings (delta-ish)
+      rcsCtx.beginPath();
+      rcsCtx.moveTo(-8, -35);
+      rcsCtx.lineTo(-95, 18);
+      rcsCtx.lineTo(-82, 42);
+      rcsCtx.lineTo(0, 12);
+      rcsCtx.fill();
+      rcsCtx.stroke();
+
+      rcsCtx.beginPath();
+      rcsCtx.moveTo(8, -35);
+      rcsCtx.lineTo(95, 18);
+      rcsCtx.lineTo(82, 42);
+      rcsCtx.lineTo(0, 12);
+      rcsCtx.fill();
+      rcsCtx.stroke();
+
+      // Tail fins
+      rcsCtx.beginPath();
+      rcsCtx.moveTo(-18, 78);
+      rcsCtx.lineTo(-42, 105);
+      rcsCtx.lineTo(-12, 98);
+      rcsCtx.fill();
+      rcsCtx.stroke();
+
+      rcsCtx.beginPath();
+      rcsCtx.moveTo(18, 78);
+      rcsCtx.lineTo(42, 105);
+      rcsCtx.lineTo(12, 98);
+      rcsCtx.fill();
+      rcsCtx.stroke();
+
+      rcsCtx.restore();
+
+      // RCS lobes (illustrative — front small, rear larger, side lobes)
+      const rad = (angleDeg - 90) * Math.PI / 180;
+      const frontRCS = 0.15 + Math.sin(angleDeg * Math.PI / 180) * 0.05; // smaller front
+      const rearRCS = 1.8 + Math.cos(angleDeg * Math.PI / 180) * 0.6;
+      const sideRCS = 0.9 + Math.sin((angleDeg + 90) * Math.PI / 180) * 0.4;
+
+      // Dynamic lobe size based on angle
+      function drawLobe(angleOffset, baseSize, color) {
+        const a = (angleDeg + angleOffset - 90) * Math.PI / 180;
+        const size = baseSize * (0.6 + 0.4 * Math.sin((angleDeg + angleOffset) * Math.PI / 90));
+        rcsCtx.strokeStyle = color;
+        rcsCtx.lineWidth = 2.5;
+        rcsCtx.beginPath();
+        rcsCtx.arc(cx + Math.cos(a) * (size * 0.6), cy + Math.sin(a) * (size * 0.6), size, 0, Math.PI * 2);
+        rcsCtx.stroke();
+      }
+
+      // Su-57 lobes (illustrative)
+      drawLobe(0, 48, '#c5a36e');           // front emphasis (smaller)
+      drawLobe(180, 95, '#c5a36e');         // rear (larger)
+      drawLobe(90, 72, '#c5a36e');
+      drawLobe(-90, 72, '#c5a36e');
+
+      // Comparison aircraft (much smaller for F-22)
+      const showF22 = document.getElementById('show-f22').checked;
+      const showJ20 = document.getElementById('show-j20').checked;
+
+      if (showF22) {
+        rcsCtx.strokeStyle = '#4aa3e0';
+        rcsCtx.lineWidth = 1.5;
+        rcsCtx.beginPath();
+        rcsCtx.arc(cx + Math.cos(rad) * 28, cy + Math.sin(rad) * 28, 9, 0, Math.PI * 2);
+        rcsCtx.stroke();
+        rcsCtx.fillStyle = '#4aa3e0';
+        rcsCtx.font = '10px monospace';
+        rcsCtx.fillText('F-22', cx + Math.cos(rad) * 28 - 12, cy + Math.sin(rad) * 28 - 16);
+      }
+
+      if (showJ20) {
+        const jAngle = (angleDeg + 12) * Math.PI / 180; // slight offset for visibility
+        rcsCtx.strokeStyle = '#4aa3e0';
+        rcsCtx.lineWidth = 1.5;
+        rcsCtx.beginPath();
+        rcsCtx.arc(cx + Math.cos(jAngle) * 65, cy + Math.sin(jAngle) * 65, 22, 0, Math.PI * 2);
+        rcsCtx.stroke();
+      }
+
+      // Update readout
+      const rcsVal = (0.12 + Math.pow(Math.abs(Math.sin(angleDeg * Math.PI / 180)), 0.7) * 1.9).toFixed(2);
+      document.getElementById('rcs-number').textContent = rcsVal;
+      document.getElementById('angle-readout').textContent = String(Math.round(angleDeg)).padStart(3, '0') + '°';
+    }
+
+    function setRCSAngle(deg) {
+      currentAngle = deg;
+      document.getElementById('rcs-angle').value = deg;
+      drawRCSCanvas(currentAngle);
+    }
+
+    function initRCSVisualizer() {
+      rcsCanvas = document.getElementById('rcs-canvas');
+      if (!rcsCanvas) return;
+      rcsCtx = rcsCanvas.getContext('2d', { alpha: true });
+
+      const angleSlider = document.getElementById('rcs-angle');
+      angleSlider.addEventListener('input', () => {
+        currentAngle = parseFloat(angleSlider.value);
+        drawRCSCanvas(currentAngle);
+      });
+
+      ['show-f22', 'show-j20'].forEach(id => {
+        const cb = document.getElementById(id);
+        if (cb) cb.addEventListener('change', () => drawRCSCanvas(currentAngle));
+      });
+
+      // Initial draw + gentle animation hint
+      currentAngle = 12;
+      angleSlider.value = currentAngle;
+      drawRCSCanvas(currentAngle);
+
+      // Subtle breathing animation for 6 seconds on first load
+      let t = 0;
+      const breathe = setInterval(() => {
+        t += 0.8;
+        if (t > 18) {
+          clearInterval(breathe);
+          return;
+        }
+        const a = currentAngle + Math.sin(t / 3) * 1.5;
+        drawRCSCanvas(a);
+      }, 110);
+
+      console.log('%c[THE FELON] Milestone 7: RCS Canvas visualizer initialized (illustrative model)', 'color:#c5a36e');
+    }
+
     // Boot everything
     function bootstrap() {
       initTailwind();
@@ -1045,9 +1280,10 @@
       initAccessibility();
       initTimeline();
       initRivalComparator();
+      initRCSVisualizer();
 
       // Mark milestone ready
-      console.log('%c[THE FELON] Milestones 1–6 complete. Timeline + live rival comparator active.', 'color:#555');
+      console.log('%c[THE FELON] Milestones 1–7 complete. RCS visualizer is live (estimates clearly flagged).', 'color:#c5a36e');
     }
 
     window.onload = bootstrap;
