@@ -149,6 +149,44 @@
     .data-value {
       font-feature-settings: "tnum";
     }
+
+    /* Milestone 5+ Timeline styles */
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .timeline-event {
+      min-width: 168px;
+      max-width: 168px;
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .timeline-event:hover {
+      transform: translateY(-3px);
+    }
+    .timeline-event.active {
+      border-color: #c5a36e;
+      box-shadow: 0 0 0 1px #c5a36e;
+    }
+    .timeline-dot {
+      width: 11px;
+      height: 11px;
+      background: #050505;
+      border: 3px solid #c5a36e;
+      border-radius: 9999px;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    .timeline-event.active .timeline-dot {
+      background: #c5a36e;
+      border-color: #c5a36e;
+      box-shadow: 0 0 0 4px rgba(197, 163, 110, 0.2);
+    }
   </style>
 </head>
 <body class="cinematic-bg text-[#e8e6e1] overflow-x-hidden">
@@ -294,36 +332,47 @@
     </div>
   </div>
 
-  <!-- THE PROGRAM -->
-  <section id="program" class="max-w-screen-2xl mx-auto px-6 md:px-12 pt-20 pb-16">
-    <div class="max-w-4xl">
-      <div class="section-label mb-3">CHAPTER 01</div>
-      <h2 class="section-header font-semibold tracking-tighter mb-6">The Program</h2>
-      
-      <div class="editorial-text max-w-3xl space-y-5">
-        <p>The Sukhoi Su-57, NATO reporting name <span class="font-medium text-white">"Felon"</span>, is the first operational fifth-generation fighter developed by Russia under the PAK FA (Prospective Airborne Complex of Frontline Aviation) program.</p>
-        
-        <p>Conceived in the early 2000s as a response to the American F-22, the aircraft was intended to deliver a combination of supercruise, supermaneuverability, reduced radar signature, and advanced sensor fusion at a lower cost than its Western counterparts.</p>
+  <!-- THE PROGRAM + INTERACTIVE TIMELINE (MILESTONE 5) -->
+  <section id="program" class="max-w-screen-2xl mx-auto px-6 md:px-12 pt-20 pb-20 border-b border-[#22262e]">
+    <div class="max-w-5xl">
+      <div class="flex items-end justify-between mb-8">
+        <div>
+          <div class="section-label mb-3">CHAPTER 01</div>
+          <h2 class="section-header font-semibold tracking-tighter">The Program</h2>
+        </div>
+        <div class="hidden md:block text-xs text-[#a1a1aa] max-w-[260px] text-right">Click any event. The panel below updates with verified details and sources.</div>
       </div>
 
-      <div class="mt-8 grid md:grid-cols-3 gap-4 text-sm">
-        <div class="premium-card p-5 rounded-2xl">
-          <div class="text-[#c5a36e] text-xs mb-1">KEY DEVELOPMENT MILESTONE</div>
-          <div class="font-semibold">2010 — First flight of T-50-1 prototype</div>
-          <div class="text-[#a1a1aa] mt-3 text-xs">The aircraft publicly debuted at MAKS 2011. Early flight testing revealed both impressive agility and significant challenges in engine reliability and manufacturing quality.</div>
+      <!-- Interactive Timeline -->
+      <div class="relative">
+        <!-- Timeline rail -->
+        <div class="absolute left-0 right-0 top-[38px] h-px bg-[#22262e]"></div>
+        <div id="timeline-rail" class="absolute left-0 top-[38px] h-px bg-gradient-to-r from-[#c5a36e] to-[#4aa3e0] transition-all duration-500" style="width: 0%"></div>
+
+        <div id="timeline" class="flex gap-4 md:gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide -mx-2 px-2">
+          <!-- Populated by JS -->
         </div>
-        <div class="premium-card p-5 rounded-2xl">
-          <div class="text-[#c5a36e] text-xs mb-1">PRODUCTION REALITY</div>
-          <div class="font-semibold">Slow ramp, limited numbers</div>
-          <div class="text-[#a1a1aa] mt-3 text-xs">As of early 2026, open-source reporting places total production (including prototypes) around 42 airframes. Sanctions, engine maturation delays, and the demands of the Ukraine conflict have constrained output.</div>
-        </div>
-        <div class="premium-card p-5 rounded-2xl border border-[#3f2a1e]">
-          <div class="flex items-center gap-2 text-[#c5a36e] text-xs mb-1">
-            <i class="fa-solid fa-exclamation-triangle"></i>
-            <span>SPECULATIVE</span>
+      </div>
+
+      <!-- Active Event Detail Panel -->
+      <div id="timeline-detail" class="mt-4 premium-card rounded-3xl p-7 md:p-9 transition-all">
+        <div class="flex flex-col md:flex-row gap-8">
+          <div class="flex-1">
+            <div id="detail-date" class="text-[#c5a36e] text-sm font-mono tracking-widest"></div>
+            <h3 id="detail-title" class="text-2xl md:text-3xl font-semibold tracking-tight mt-1"></h3>
+            <div id="detail-body" class="editorial-text mt-4 text-[#c8c5be]"></div>
+            
+            <div class="mt-5 flex items-center gap-3">
+              <span id="detail-flag" class="flag-badge"></span>
+              <span id="detail-source" class="text-xs text-[#a1a1aa]"></span>
+            </div>
           </div>
-          <div class="font-semibold">Future variants &amp; export</div>
-          <div class="text-[#a1a1aa] mt-3 text-xs">Su-57M upgrades and the two-seat Su-57D are in testing. Algeria has publicly discussed acquiring the export Su-57E variant. Actual deliveries and timelines remain fluid.</div>
+          <div class="md:w-72 flex-shrink-0">
+            <div class="aspect-video bg-[#111317] rounded-2xl overflow-hidden border border-[#22262e]">
+              <img id="detail-image" class="w-full h-full object-cover" alt="">
+            </div>
+            <div id="detail-image-credit" class="text-[10px] text-[#666] mt-2 font-mono"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -568,11 +617,212 @@
 
     // Basic accessibility + reduced motion respect
     function initAccessibility() {
-      // Respect prefers-reduced-motion for any future heavy animations
       const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
       if (mediaQuery.matches) {
         document.documentElement.style.setProperty('--motion-duration', '0ms');
       }
+    }
+
+    // ============================================
+    // MILESTONE 5: INTERACTIVE TIMELINE
+    // ============================================
+    const timelineEvents = [
+      {
+        id: 1,
+        year: "2010",
+        date: "29 JANUARY 2010",
+        title: "First Flight",
+        short: "T-50-1 takes to the air",
+        body: "Prototype T-50-1 (Su-57 development aircraft) completed its maiden flight from Dzyomgi Airport. The flight lasted 47 minutes and validated basic handling qualities.",
+        flag: "VERIFIED",
+        source: "Russian Ministry of Defence / Sukhoi",
+        image: "https://upload.wikimedia.org/wikipedia/commons/4/40/T-50_PAK_FA_-_MAKS-2013Firstpixflights02.jpg",
+        credit: "Vitaly V. Kuzmin / CC BY-SA 4.0"
+      },
+      {
+        id: 2,
+        year: "2011",
+        date: "AUGUST 2011",
+        title: "Public Debut at MAKS",
+        short: "First international reveal",
+        body: "The aircraft was publicly displayed for the first time at the MAKS airshow in Zhukovsky. Western analysts noted visible gaps and surface quality issues on early prototypes that would affect real-world RCS.",
+        flag: "VERIFIED",
+        source: "MAKS official + multiple aviation media",
+        image: "https://upload.wikimedia.org/wikipedia/commons/3/35/MAKS_Airshow_2019_(2019-08-30)_303.jpg",
+        credit: "Krassotkin / CC0"
+      },
+      {
+        id: 3,
+        year: "2018",
+        date: "FEBRUARY–MAY 2018",
+        title: "Syria Combat Trials",
+        short: "First known combat deployment",
+        body: "Two prototypes deployed to Khmeimim Air Base. Russian MoD stated the aircraft conducted combat evaluation flights and fired at least one cruise missile (likely Kh-59MK2). No independent confirmation of target effects.",
+        flag: "CLAIMED",
+        source: "Russian MoD statements; limited OSINT visual confirmation",
+        image: "https://upload.wikimedia.org/wikipedia/commons/b/be/PAK_FA_Prandtl_Glauert_singularity.jpg",
+        credit: "Rulexip / CC BY-SA 3.0"
+      },
+      {
+        id: 4,
+        year: "2020",
+        date: "DECEMBER 2020",
+        title: "Initial Operational Capability",
+        short: "Formally accepted into service",
+        body: "The Russian Aerospace Forces formally accepted the Su-57 into limited service with the 23rd Fighter Aviation Regiment. Production remained extremely slow due to engine issues and sanctions.",
+        flag: "VERIFIED",
+        source: "Russian MoD + IISS Military Balance",
+        image: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Su-57_052_and_Su-57_051_in_MAKS_2019.jpg",
+        credit: "President of Russia / CC BY 4.0"
+      },
+      {
+        id: 5,
+        year: "2022",
+        date: "MAY–JUNE 2022",
+        title: "Ukraine Deployment Begins",
+        short: "First reported use in Ukraine",
+        body: "Su-57s reported launching long-range R-37M and Kh-69 missiles from Russian airspace. Used primarily as a standoff platform rather than penetrating defended airspace. Russian claims of air-to-air kills lack independent verification.",
+        flag: "VERIFIED USE",
+        source: "Ukrainian GUR + Russian milbloggers + OSINT",
+        image: "https://upload.wikimedia.org/wikipedia/commons/4/40/T-50_PAK_FA_-_MAKS-2013Firstpixflights02.jpg",
+        credit: "Vitaly V. Kuzmin / CC BY-SA 4.0"
+      },
+      {
+        id: 6,
+        year: "2024",
+        date: "5 OCTOBER 2024",
+        title: "Downed Own S-70 UCAV",
+        short: "Unique confirmed combat action",
+        body: "A Su-57 deliberately shot down its own malfunctioning S-70 Okhotnik-B stealth UCAV over Ukraine to prevent capture. This remains the only fully confirmed combat use of the type's weapons in the conflict.",
+        flag: "VERIFIED",
+        source: "Russian milbloggers + Ukrainian intelligence",
+        image: "https://upload.wikimedia.org/wikipedia/commons/3/35/MAKS_Airshow_2019_(2019-08-30)_303.jpg",
+        credit: "Krassotkin / CC0"
+      },
+      {
+        id: 7,
+        year: "2024",
+        date: "JUNE 2024",
+        title: "Ground Damage at Akhtubinsk",
+        short: "First confirmed damage to the type",
+        body: "Ukrainian drone strike caused shrapnel damage to at least one Su-57 on the ground at Akhtubinsk airbase (Russia). Confirmed by Maxar satellite imagery and Russian Fighterbomber Telegram channel. No total losses in flight recorded.",
+        flag: "VERIFIED DAMAGE",
+        source: "Reuters + Maxar + Russian milbloggers",
+        image: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Su-57_052_and_Su-57_051_in_MAKS_2019.jpg",
+        credit: "President of Russia / CC BY 4.0"
+      },
+      {
+        id: 8,
+        year: "2025–26",
+        date: "ONGOING",
+        title: "Production & Upgrades Continue",
+        short: "Slow but steady progress",
+        body: "Hybrid izdeliye 177 engine (bridge to AL-51F1) reportedly flew in late 2025. Total fleet remains small. Algeria continues discussions for Su-57E export variant. No major new combat losses or confirmed air-to-air successes reported.",
+        flag: "ESTIMATED",
+        source: "Open-source defense analysis (FlightGlobal, The War Zone, etc.)",
+        image: "https://upload.wikimedia.org/wikipedia/commons/b/be/PAK_FA_Prandtl_Glauert_singularity.jpg",
+        credit: "Rulexip / CC BY-SA 3.0"
+      }
+    ];
+
+    let currentTimelineId = null;
+
+    function renderTimeline() {
+      const container = document.getElementById('timeline');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      timelineEvents.forEach((event, index) => {
+        const el = document.createElement('div');
+        el.className = `timeline-event premium-card border border-[#22262e] rounded-2xl p-4 flex-shrink-0 snap-start`;
+        el.innerHTML = `
+          <div class="flex items-center gap-3 mb-3">
+            <div class="timeline-dot"></div>
+            <div class="text-xs font-mono text-[#c5a36e] tracking-widest">${event.year}</div>
+          </div>
+          <div class="font-semibold text-sm leading-tight mb-1 pr-1">${event.title}</div>
+          <div class="text-xs text-[#a1a1aa] line-clamp-2">${event.short}</div>
+        `;
+
+        el.addEventListener('click', () => selectTimelineEvent(event.id, el));
+        container.appendChild(el);
+
+        // Auto-select first event
+        if (index === 0) {
+          setTimeout(() => selectTimelineEvent(event.id, el), 80);
+        }
+      });
+
+      // Update rail on scroll
+      container.addEventListener('scroll', updateTimelineRail);
+    }
+
+    function updateTimelineRail() {
+      const container = document.getElementById('timeline');
+      const rail = document.getElementById('timeline-rail');
+      if (!container || !rail) return;
+
+      const scrollLeft = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const percent = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0;
+      rail.style.width = `${Math.max(8, percent)}%`;
+    }
+
+    function selectTimelineEvent(id, clickedEl) {
+      // Remove active from all
+      document.querySelectorAll('#timeline .timeline-event').forEach(el => el.classList.remove('active'));
+      if (clickedEl) clickedEl.classList.add('active');
+
+      const event = timelineEvents.find(e => e.id === id);
+      if (!event) return;
+
+      currentTimelineId = id;
+
+      // Update detail panel
+      document.getElementById('detail-date').textContent = event.date;
+      document.getElementById('detail-title').textContent = event.title;
+      document.getElementById('detail-body').innerHTML = `<p>${event.body}</p>`;
+      document.getElementById('detail-flag').textContent = event.flag;
+      document.getElementById('detail-source').textContent = event.source;
+
+      const img = document.getElementById('detail-image');
+      img.src = event.image;
+      img.alt = event.title;
+
+      document.getElementById('detail-image-credit').innerHTML = event.credit;
+
+      // Subtle flash on panel
+      const panel = document.getElementById('timeline-detail');
+      panel.style.transitionDuration = '60ms';
+      panel.style.borderColor = '#c5a36e';
+      setTimeout(() => {
+        panel.style.borderColor = '#22262e';
+      }, 650);
+    }
+
+    function initTimeline() {
+      renderTimeline();
+      
+      // Keyboard support for timeline
+      document.addEventListener('keydown', (e) => {
+        if (!currentTimelineId) return;
+        const currentIndex = timelineEvents.findIndex(ev => ev.id === currentTimelineId);
+        if (currentIndex === -1) return;
+
+        if (e.key === 'ArrowRight' && currentIndex < timelineEvents.length - 1) {
+          const next = timelineEvents[currentIndex + 1];
+          const cards = document.querySelectorAll('#timeline .timeline-event');
+          selectTimelineEvent(next.id, cards[currentIndex + 1]);
+        }
+        if (e.key === 'ArrowLeft' && currentIndex > 0) {
+          const prev = timelineEvents[currentIndex - 1];
+          const cards = document.querySelectorAll('#timeline .timeline-event');
+          selectTimelineEvent(prev.id, cards[currentIndex - 1]);
+        }
+      });
+
+      console.log('%c[THE FELON] Milestone 5: Interactive timeline initialized', 'color:#4aa3e0');
     }
 
     // Boot everything
@@ -583,9 +833,10 @@
       initSmoothAnchors();
       initKeyboardHints();
       initAccessibility();
+      initTimeline();
 
       // Mark milestone ready
-      console.log('%c[THE FELON] Milestone 1 shell initialized. All interactions ready.', 'color:#555');
+      console.log('%c[THE FELON] Milestone 1–5 shell + timeline ready. All interactions live.', 'color:#555');
     }
 
     window.onload = bootstrap;
