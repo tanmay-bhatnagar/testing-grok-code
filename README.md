@@ -92,3 +92,34 @@ This is a transparency / failure case study repository. All research content is 
 ---
 
 *Published as requested to document the outcome of the "THE FELON" website build task.*
+
+---
+
+## How to Publish This Repository (under tanmay-bhatnagar)
+
+This repo was prepared in an environment where the active GitHub account was `tanmay-wbd`. To publish it under `tanmay-bhatnagar`:
+
+1. Make sure you are logged into the `tanmay-bhatnagar` GitHub account with the GitHub CLI:
+   ```bash
+   gh auth switch -u tanmay-bhatnagar
+   ```
+
+2. Create the repository on GitHub:
+   ```bash
+   gh repo create tanmay-bhatnagar/testing-grok-code --public --source=. --remote=origin --push
+   ```
+
+   Or do it manually:
+   - Go to https://github.com/new
+   - Repository name: `testing-grok-code`
+   - Public
+   - Do **not** initialize with README (we already have one)
+   - Then locally:
+     ```bash
+     git remote add origin git@github.com:tanmay-bhatnagar/testing-grok-code.git
+     git push -u origin main
+     git push -u origin dev
+     ```
+
+This will push both branches with full history.
+
