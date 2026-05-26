@@ -6,6 +6,8 @@
   <title>THE FELON — Sukhoi Su-57 | Open-Source Investigation</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js for Milestone 6 rival comparator -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
     
@@ -378,7 +380,7 @@
     </div>
   </section>
 
-  <!-- ANATOMY TEASER (Milestone 1 placeholder for full specs) -->
+  <!-- ANATOMY + FULL SPECS (MILESTONE 6) -->
   <section id="anatomy" class="border-t border-[#22262e] bg-[#0a0c10]">
     <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16">
       <div class="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
@@ -387,11 +389,7 @@
           <h2 class="section-header font-semibold tracking-tighter mb-5">Anatomy of the Felon</h2>
           <p class="editorial-text max-w-lg">Twin-engine, single-seat stealth multirole fighter with internal weapons bays, thrust-vectoring engines, and a distinctive blend of Russian kinematic tradition with low-observable shaping.</p>
           
-          <button onclick="document.getElementById('rivals').scrollIntoView({ behavior: 'smooth' })" 
-                  class="mt-8 text-sm flex items-center gap-x-2 text-[#c5a36e] hover:text-white group">
-            SEE HOW IT COMPARES TO F-22 &amp; J-20 
-            <i class="fa-solid fa-arrow-right group-hover:translate-x-0.5 transition"></i>
-          </button>
+          <div class="mt-6 text-xs text-[#c5a36e]">All figures are manufacturer claims or open-source estimates unless noted.</div>
         </div>
 
         <div class="lg:w-7/12">
@@ -431,7 +429,7 @@
     </div>
   </section>
 
-  <!-- STEALTH TEASER -->
+  <!-- STEALTH TEASER (will be fully replaced in M7) -->
   <section id="stealth" class="max-w-screen-2xl mx-auto px-6 md:px-12 py-20 border-t border-[#22262e]">
     <div class="max-w-3xl">
       <div class="section-label mb-3">CHAPTER 03 — THE MOST CONTESTED CLAIM</div>
@@ -448,38 +446,107 @@
     </div>
 
     <div class="mt-12 text-xs text-[#a1a1aa] max-w-md">
-      Full interactive RCS signature visualizer and detailed comparison with F-22 and J-20 arriving in Milestone 4.
+      Full interactive RCS signature visualizer arriving in the next milestone.
     </div>
   </section>
 
-  <!-- RIVALS TEASER -->
+  <!-- RIVALS — FULL INTERACTIVE COMPARATOR (MILESTONE 6) -->
   <section id="rivals" class="bg-[#0a0c10] border-y border-[#22262e]">
     <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16">
-      <div class="max-w-3xl">
+      <div class="max-w-3xl mb-10">
         <div class="section-label mb-3">CHAPTER 04</div>
         <h2 class="section-header font-semibold tracking-tighter mb-5">Against the Peers</h2>
-        <p class="editorial-text">How does the Felon stack up against the Lockheed Martin F-22 Raptor and the Chengdu J-20? The answer depends heavily on which mission and which metrics matter most.</p>
+        <p class="editorial-text">Adjust the mission priority sliders below. The composite scores and radar charts update live based on open-source synthesis of publicly discussed strengths. These are analytical estimates, not classified performance data.</p>
       </div>
 
-      <div class="mt-10 grid md:grid-cols-3 gap-4">
-        <div class="premium-card p-6 rounded-2xl">
-          <div class="uppercase tracking-widest text-xs text-[#4aa3e0]">UNITED STATES</div>
-          <div class="text-2xl font-semibold mt-1">F-22 Raptor</div>
-          <div class="mt-4 text-sm text-[#a1a1aa]">The benchmark for all-aspect stealth and sensor fusion. Production ended 2011. Small, elite fleet.</div>
-          <div class="mt-6 text-[10px] text-[#c5a36e]">STRENGTH: Lowest observable signature</div>
+      <!-- Weighting Sliders -->
+      <div class="grid md:grid-cols-5 gap-4 mb-8">
+        <div class="md:col-span-2">
+          <div class="text-sm font-medium mb-4 text-[#c5a36e]">MISSION PRIORITY WEIGHTS</div>
+          
+          <div class="space-y-5">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span>Stealth / Survivability</span>
+                <span id="w-stealth-val" class="font-mono text-[#4aa3e0]">35</span>
+              </div>
+              <input type="range" id="w-stealth" min="0" max="100" value="35" class="w-full accent-[#c5a36e]">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span>Kinematics &amp; Maneuver</span>
+                <span id="w-kinematics-val" class="font-mono text-[#4aa3e0]">25</span>
+              </div>
+              <input type="range" id="w-kinematics" min="0" max="100" value="25" class="w-full accent-[#c5a36e]">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span>Sensors &amp; Awareness</span>
+                <span id="w-sensors-val" class="font-mono text-[#4aa3e0]">20</span>
+              </div>
+              <input type="range" id="w-sensors" min="0" max="100" value="20" class="w-full accent-[#c5a36e]">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span>Payload Flexibility</span>
+                <span id="w-payload-val" class="font-mono text-[#4aa3e0]">12</span>
+              </div>
+              <input type="range" id="w-payload" min="0" max="100" value="12" class="w-full accent-[#c5a36e]">
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span>Numbers &amp; Availability</span>
+                <span id="w-numbers-val" class="font-mono text-[#4aa3e0]">8</span>
+              </div>
+              <input type="range" id="w-numbers" min="0" max="100" value="8" class="w-full accent-[#c5a36e]">
+            </div>
+          </div>
+
+          <button onclick="resetRivalWeights()" 
+                  class="mt-5 text-xs px-4 py-2 border border-[#333] hover:bg-[#111317] rounded-full">RESET TO DEFAULT</button>
         </div>
-        <div class="premium-card p-6 rounded-2xl">
-          <div class="uppercase tracking-widest text-xs text-[#4aa3e0]">CHINA</div>
-          <div class="text-2xl font-semibold mt-1">Chengdu J-20</div>
-          <div class="mt-4 text-sm text-[#a1a1aa]">Largest 5th-gen fleet in the world (300+). Long-range BVR specialist with rapid production rate.</div>
-          <div class="mt-6 text-[10px] text-[#c5a36e]">STRENGTH: Numbers &amp; missile reach</div>
+
+        <!-- Live Scores -->
+        <div class="md:col-span-3">
+          <div class="grid grid-cols-3 gap-4">
+            <div class="premium-card p-5 rounded-2xl text-center">
+              <div class="text-xs text-[#4aa3e0]">F-22 RAPTOR</div>
+              <div id="score-f22" class="text-5xl font-semibold tabular-nums mt-1 text-white">87</div>
+              <div class="text-[10px] text-[#a1a1aa] mt-1">COMPOSITE SCORE</div>
+            </div>
+            <div class="premium-card p-5 rounded-2xl text-center">
+              <div class="text-xs text-[#4aa3e0]">CHENGDU J-20</div>
+              <div id="score-j20" class="text-5xl font-semibold tabular-nums mt-1 text-white">81</div>
+              <div class="text-[10px] text-[#a1a1aa] mt-1">COMPOSITE SCORE</div>
+            </div>
+            <div class="premium-card p-5 rounded-2xl text-center border-[#c5a36e]/40">
+              <div class="text-xs text-[#c5a36e]">SUKHOI SU-57</div>
+              <div id="score-su57" class="text-5xl font-semibold tabular-nums mt-1 text-white">74</div>
+              <div class="text-[10px] text-[#a1a1aa] mt-1">COMPOSITE SCORE</div>
+            </div>
+          </div>
+          <div class="text-[10px] text-[#666] mt-3 text-center">Scores are illustrative, derived from public analyses. Real outcomes depend on training, EW, numbers, and tactics.</div>
         </div>
-        <div class="premium-card p-6 rounded-2xl border-[#c5a36e]/30">
-          <div class="uppercase tracking-widest text-xs text-[#c5a36e]">RUSSIA</div>
-          <div class="text-2xl font-semibold mt-1">Su-57 Felon</div>
-          <div class="mt-4 text-sm text-[#a1a1aa]">Supermaneuverable multirole platform with side-looking sensors and flexible payload. Smallest fleet.</div>
-          <div class="mt-6 text-[10px] text-[#c5a36e]">TRADE-OFF: Higher observability for agility</div>
+      </div>
+
+      <!-- Radar Charts -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="premium-card p-5 rounded-3xl">
+          <div class="text-xs uppercase tracking-widest mb-3 text-[#4aa3e0]">F-22 Raptor</div>
+          <canvas id="chart-f22" height="220"></canvas>
         </div>
+        <div class="premium-card p-5 rounded-3xl">
+          <div class="text-xs uppercase tracking-widest mb-3 text-[#4aa3e0]">Chengdu J-20</div>
+          <canvas id="chart-j20" height="220"></canvas>
+        </div>
+        <div class="premium-card p-5 rounded-3xl">
+          <div class="text-xs uppercase tracking-widest mb-3 text-[#c5a36e]">Su-57 Felon</div>
+          <canvas id="chart-su57" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="mt-8 text-xs text-[#a1a1aa] max-w-3xl">
+        Base capability values drawn from open-source literature (Wikipedia compilations, FlightGlobal, The War Zone, IISS). Slider weights are user-controlled. All numbers are estimates and should not be used for operational planning.
       </div>
     </div>
   </section>
@@ -825,6 +892,149 @@
       console.log('%c[THE FELON] Milestone 5: Interactive timeline initialized', 'color:#4aa3e0');
     }
 
+    // ============================================
+    // MILESTONE 6: INTERACTIVE RIVAL COMPARATOR
+    // ============================================
+    let rivalCharts = {};
+    const baseCapabilities = {
+      f22:  { stealth: 98, kinematics: 92, sensors: 95, payload: 68, numbers: 42 },
+      j20:  { stealth: 82, kinematics: 78, sensors: 85, payload: 88, numbers: 96 },
+      su57: { stealth: 58, kinematics: 95, sensors: 82, payload: 92, numbers: 38 }
+    };
+
+    function getWeights() {
+      return {
+        stealth: parseInt(document.getElementById('w-stealth').value),
+        kinematics: parseInt(document.getElementById('w-kinematics').value),
+        sensors: parseInt(document.getElementById('w-sensors').value),
+        payload: parseInt(document.getElementById('w-payload').value),
+        numbers: parseInt(document.getElementById('w-numbers').value)
+      };
+    }
+
+    function updateWeightLabels() {
+      const w = getWeights();
+      document.getElementById('w-stealth-val').textContent = w.stealth;
+      document.getElementById('w-kinematics-val').textContent = w.kinematics;
+      document.getElementById('w-sensors-val').textContent = w.sensors;
+      document.getElementById('w-payload-val').textContent = w.payload;
+      document.getElementById('w-numbers-val').textContent = w.numbers;
+    }
+
+    function calculateScores(weights) {
+      const totalWeight = weights.stealth + weights.kinematics + weights.sensors + weights.payload + weights.numbers || 1;
+
+      function scoreFor(plane) {
+        const c = baseCapabilities[plane];
+        const raw = (c.stealth * weights.stealth) +
+                    (c.kinematics * weights.kinematics) +
+                    (c.sensors * weights.sensors) +
+                    (c.payload * weights.payload) +
+                    (c.numbers * weights.numbers);
+        return Math.round(raw / totalWeight);
+      }
+
+      return {
+        f22: scoreFor('f22'),
+        j20: scoreFor('j20'),
+        su57: scoreFor('su57')
+      };
+    }
+
+    function updateScores() {
+      const weights = getWeights();
+      const scores = calculateScores(weights);
+
+      document.getElementById('score-f22').textContent = scores.f22;
+      document.getElementById('score-j20').textContent = scores.j20;
+      document.getElementById('score-su57').textContent = scores.su57;
+
+      // Update charts
+      if (rivalCharts.f22) rivalCharts.f22.data.datasets[0].data = Object.values(baseCapabilities.f22);
+      if (rivalCharts.j20) rivalCharts.j20.data.datasets[0].data = Object.values(baseCapabilities.j20);
+      if (rivalCharts.su57) rivalCharts.su57.data.datasets[0].data = Object.values(baseCapabilities.su57);
+
+      // Optional: scale opacity or title by score
+      Object.keys(rivalCharts).forEach(key => {
+        if (rivalCharts[key]) rivalCharts[key].update();
+      });
+    }
+
+    function initRivalComparator() {
+      const canvasIds = ['chart-f22', 'chart-j20', 'chart-su57'];
+      const labels = ['Stealth', 'Kinematics', 'Sensors', 'Payload', 'Numbers'];
+      const colors = ['#4aa3e0', '#4aa3e0', '#c5a36e'];
+
+      canvasIds.forEach((id, i) => {
+        const ctx = document.getElementById(id);
+        if (!ctx) return;
+
+        const plane = ['f22', 'j20', 'su57'][i];
+        const data = Object.values(baseCapabilities[plane]);
+
+        rivalCharts[plane] = new Chart(ctx, {
+          type: 'radar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: plane.toUpperCase(),
+              data: data,
+              borderColor: colors[i],
+              backgroundColor: i < 2 ? 'rgba(74, 163, 224, 0.15)' : 'rgba(197, 163, 110, 0.18)',
+              borderWidth: 2.5,
+              pointBackgroundColor: colors[i]
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              r: {
+                min: 0,
+                max: 100,
+                ticks: { stepSize: 25, display: false },
+                grid: { color: '#22262e' },
+                angleLines: { color: '#22262e' },
+                pointLabels: { color: '#a1a1aa', font: { size: 10 } }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: (ctx) => `${ctx.raw}` } }
+            }
+          }
+        });
+      });
+
+      // Wire sliders
+      ['w-stealth','w-kinematics','w-sensors','w-payload','w-numbers'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', () => {
+            updateWeightLabels();
+            updateScores();
+          });
+        }
+      });
+
+      // Initial render
+      updateWeightLabels();
+      updateScores();
+
+      console.log('%c[THE FELON] Milestone 6: Rival comparator + Chart.js live', 'color:#4aa3e0');
+    }
+
+    function resetRivalWeights() {
+      document.getElementById('w-stealth').value = 35;
+      document.getElementById('w-kinematics').value = 25;
+      document.getElementById('w-sensors').value = 20;
+      document.getElementById('w-payload').value = 12;
+      document.getElementById('w-numbers').value = 8;
+
+      updateWeightLabels();
+      updateScores();
+    }
+
     // Boot everything
     function bootstrap() {
       initTailwind();
@@ -834,9 +1044,10 @@
       initKeyboardHints();
       initAccessibility();
       initTimeline();
+      initRivalComparator();
 
       // Mark milestone ready
-      console.log('%c[THE FELON] Milestone 1–5 shell + timeline ready. All interactions live.', 'color:#555');
+      console.log('%c[THE FELON] Milestones 1–6 complete. Timeline + live rival comparator active.', 'color:#555');
     }
 
     window.onload = bootstrap;
