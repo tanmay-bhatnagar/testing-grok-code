@@ -1,6 +1,6 @@
 # testing-grok-code
 
-> **This repository documents a failed attempt to build a fully self-contained, locally-renderable interactive website using Grok 4.3.**
+> **This repository documents a failed attempt to build a fully self-contained, locally-renderable interactive website using Grok 4.3 within Grok Build Beta v0.2.2, tested on 27 May 2026.**
 
 ## Original Task
 
@@ -83,7 +83,7 @@ This repository is being published transparently as a record of the process and 
 
 ## Grok Version
 
-Built using **Grok 4.3** (released by xAI in April 2026).
+Built using **Grok 4.3** within **Grok Build Beta v0.2.2**, tested on **27 May 2026**.
 
 ## License
 
@@ -97,7 +97,9 @@ This is a transparency / failure case study repository. All research content is 
 
 ## How to Publish This Repository (under tanmay-bhatnagar)
 
-This repo was prepared in an environment where the active GitHub account was `tanmay-wbd`. To publish it under `tanmay-bhatnagar`:
+This repo was prepared in an environment where the active GitHub account was `tanmay-wbd`. The intended remote under `tanmay-bhatnagar` was initially missing; it was created manually and then `main` and `dev` were pushed to it.
+
+To publish it under `tanmay-bhatnagar` from a fresh environment:
 
 1. Make sure you are logged into the `tanmay-bhatnagar` GitHub account with the GitHub CLI:
    ```bash
@@ -122,4 +124,3 @@ This repo was prepared in an environment where the active GitHub account was `ta
      ```
 
 This will push both branches with full history.
-
