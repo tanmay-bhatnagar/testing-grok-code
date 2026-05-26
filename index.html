@@ -606,25 +606,65 @@
     </div>
   </section>
 
-  <!-- COMBAT + GALLERY TEASERS -->
-  <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-20 grid md:grid-cols-2 gap-x-12 gap-y-16">
-    <div id="combat">
+  <!-- COMBAT RECORD — FILTERABLE + INTERACTIVE MAP (MILESTONE 8) -->
+  <section id="combat" class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16 border-t border-[#22262e]">
+    <div class="max-w-5xl">
       <div class="section-label mb-3">CHAPTER 05</div>
-      <h3 class="text-3xl font-semibold tracking-tight mb-4">Combat Record</h3>
-      <p class="text-[#c8c5be]">Limited employment in Syria (2018) and Ukraine (2022–present). Russia has used the type primarily for standoff missile launches rather than deep penetration of contested airspace.</p>
-      <div class="mt-4 flex items-center gap-2">
-        <span class="flag-badge">OSINT NOTE</span>
-        <span class="text-xs text-[#a1a1aa]">Zero confirmed air-to-air victories or in-flight losses as of early 2026</span>
+      <h2 class="section-header font-semibold tracking-tighter mb-3">Combat Record</h2>
+      <p class="max-w-2xl text-[#c8c5be]">The Su-57 has seen very limited combat use, primarily as a high-value standoff launch platform. All claims below are presented with strict OSINT sourcing and verification status.</p>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-2 mt-6 mb-4" id="combat-filters">
+        <button data-filter="all" class="combat-filter active px-4 py-1 text-xs rounded-full bg-[#c5a36e] text-[#050505] font-medium">ALL EVENTS</button>
+        <button data-filter="VERIFIED" class="combat-filter px-4 py-1 text-xs rounded-full bg-[#111317] border border-[#22262e] hover:bg-[#1a1f28]">VERIFIED</button>
+        <button data-filter="CLAIMED" class="combat-filter px-4 py-1 text-xs rounded-full bg-[#111317] border border-[#22262e] hover:bg-[#1a1f28]">RUSSIAN CLAIMED</button>
+        <button data-filter="DAMAGE" class="combat-filter px-4 py-1 text-xs rounded-full bg-[#111317] border border-[#22262e] hover:bg-[#1a1f28]">CONFIRMED DAMAGE</button>
+      </div>
+
+      <div class="grid lg:grid-cols-5 gap-6">
+        <!-- Events List -->
+        <div class="lg:col-span-3 space-y-3" id="combat-events">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Simple Interactive SVG Theater Map -->
+        <div class="lg:col-span-2">
+          <div class="premium-card rounded-3xl p-5">
+            <div class="text-xs text-[#c5a36e] mb-2 tracking-widest">OPERATIONAL THEATER (ILLUSTRATIVE)</div>
+            <svg id="combat-map" width="100%" height="260" viewBox="0 0 420 260" class="bg-[#050505] rounded-2xl border border-[#22262e]">
+              <!-- Simplified map background -->
+              <rect x="0" y="0" width="420" height="260" fill="#0a0c10"/>
+              <!-- Russia rough shape -->
+              <path d="M80 60 Q140 40 210 55 Q280 50 340 80 Q370 130 355 190 Q290 210 210 195 Q130 205 90 160 Z" fill="#1a1f28" stroke="#333" stroke-width="1"/>
+              <!-- Ukraine -->
+              <path d="M170 140 Q210 135 235 155 Q225 185 190 180 Z" fill="#22262e" stroke="#444" stroke-width="1"/>
+              <!-- Syria area -->
+              <rect x="95" y="175" width="38" height="28" rx="2" fill="#22262e" stroke="#444"/>
+              
+              <!-- Key locations (clickable) -->
+              <g id="map-russia" class="cursor-pointer">
+                <circle cx="240" cy="95" r="7" fill="#c5a36e"/>
+                <text x="240" y="78" font-size="9" fill="#c5a36e" text-anchor="middle">RUSSIA</text>
+              </g>
+              <g id="map-ukraine" class="cursor-pointer">
+                <circle cx="205" cy="162" r="6" fill="#ef4444"/>
+                <text x="205" y="182" font-size="8" fill="#aaa" text-anchor="middle">UKRAINE</text>
+              </g>
+              <g id="map-syria" class="cursor-pointer">
+                <circle cx="115" cy="188" r="5" fill="#4aa3e0"/>
+                <text x="115" y="205" font-size="8" fill="#aaa" text-anchor="middle">SYRIA</text>
+              </g>
+            </svg>
+            <div class="text-[10px] text-[#666] mt-2">Click map markers to filter events. Red = confirmed damage site.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 text-xs text-[#a1a1aa]">
+        <strong>OSINT Summary:</strong> Zero confirmed in-flight losses or independently verified air-to-air kills. One ground damage incident (Akhtubinsk 2024) is visually confirmed via satellite imagery.
       </div>
     </div>
-
-    <div id="gallery">
-      <div class="section-label mb-3">CHAPTER 06</div>
-      <h3 class="text-3xl font-semibold tracking-tight mb-4">In the Lens</h3>
-      <p class="text-[#c8c5be]">Authentic high-resolution photography from MAKS airshows and Russian aerospace events — all sourced from Wikimedia Commons with proper licensing.</p>
-      <div class="mt-5 text-xs text-[#c5a36e]">Full interactive gallery with lightbox coming in Milestone 6.</div>
-    </div>
-  </div>
+  </section>
 
   <!-- FOOTER / STATUS -->
   <footer class="border-t border-[#22262e] bg-[#050505]">
@@ -1270,6 +1310,72 @@
       console.log('%c[THE FELON] Milestone 7: RCS Canvas visualizer initialized (illustrative model)', 'color:#c5a36e');
     }
 
+    // ============================================
+    // MILESTONE 8: COMBAT RECORD + FILTER + MAP
+    // ============================================
+    const combatEvents = [
+      { id: 1, year: "2018", title: "Syria Combat Trials", location: "SYRIA", type: "CLAIMED", desc: "Limited prototype deployment to Khmeimim. Russian MoD claimed successful cruise missile firing during evaluation.", source: "Russian MoD" },
+      { id: 2, year: "2022", title: "Ukraine Standoff Strikes Begin", location: "RUSSIA", type: "VERIFIED", desc: "Su-57s reported launching R-37M and Kh-69 missiles from Russian airspace. Primary use as standoff platform.", source: "Ukrainian GUR + OSINT" },
+      { id: 3, year: "2024", title: "Downed Own S-70 UCAV", location: "UKRAINE", type: "VERIFIED", desc: "Su-57 deliberately engaged its own malfunctioning S-70 Okhotnik-B stealth UCAV over Ukraine to prevent capture.", source: "Russian milbloggers + Ukrainian intel" },
+      { id: 4, year: "2024", title: "Ground Damage — Akhtubinsk", location: "RUSSIA", type: "DAMAGE", desc: "Ukrainian drone strike caused confirmed shrapnel damage to at least one Su-57 on the ground. Maxar satellite imagery verified.", source: "Reuters + Maxar + Fighterbomber" },
+      { id: 5, year: "2024-25", title: "Increased Kh-69 Strikes", location: "RUSSIA", type: "VERIFIED", desc: "More frequent use for stealthy cruise missile launches against Ukrainian targets from stand-off distances.", source: "OSINT tracking" }
+    ];
+
+    function renderCombatEvents(filter = 'all') {
+      const container = document.getElementById('combat-events');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = filter === 'all' ? combatEvents : combatEvents.filter(e => e.type.includes(filter) || (filter === 'DAMAGE' && e.type === 'DAMAGE'));
+
+      filtered.forEach(ev => {
+        const div = document.createElement('div');
+        div.className = `premium-card p-4 rounded-2xl flex gap-4 text-sm border-l-2 ${ev.type === 'VERIFIED' ? 'border-[#4aa3e0]' : ev.type === 'DAMAGE' ? 'border-red-500' : 'border-[#c5a36e]'}`;
+        div.innerHTML = `
+          <div class="w-12 flex-shrink-0 text-[#c5a36e] font-mono text-xs pt-0.5">${ev.year}</div>
+          <div class="flex-1">
+            <div class="flex items-center gap-2">
+              <span class="font-semibold">${ev.title}</span>
+              <span class="flag-badge text-[9px]">${ev.type}</span>
+            </div>
+            <div class="text-[#a1a1aa] mt-1 text-xs">${ev.desc}</div>
+            <div class="text-[#666] text-[10px] mt-1">${ev.source} • ${ev.location}</div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function initCombatRecord() {
+      renderCombatEvents('all');
+
+      // Filters
+      document.querySelectorAll('#combat-filters button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#combat-filters button').forEach(b => b.classList.remove('active', 'bg-[#c5a36e]', 'text-[#050505]'));
+          btn.classList.add('active', 'bg-[#c5a36e]', 'text-[#050505]');
+          renderCombatEvents(btn.dataset.filter);
+        });
+      });
+
+      // Interactive SVG map
+      const map = document.getElementById('combat-map');
+      if (map) {
+        const russia = document.getElementById('map-russia');
+        const ukraine = document.getElementById('map-ukraine');
+        const syria = document.getElementById('map-syria');
+
+        if (russia) russia.addEventListener('click', () => {
+          document.querySelector('#combat-filters button[data-filter="all"]').click();
+          renderCombatEvents('RUSSIA'); // simple filter by location text
+        });
+        if (ukraine) ukraine.addEventListener('click', () => renderCombatEvents('UKRAINE'));
+        if (syria) syria.addEventListener('click', () => renderCombatEvents('SYRIA'));
+      }
+
+      console.log('%c[THE FELON] Milestone 8: Combat record + filterable events + map initialized', 'color:#ef4444');
+    }
+
     // Boot everything
     function bootstrap() {
       initTailwind();
@@ -1281,9 +1387,10 @@
       initTimeline();
       initRivalComparator();
       initRCSVisualizer();
+      initCombatRecord();
 
       // Mark milestone ready
-      console.log('%c[THE FELON] Milestones 1–7 complete. RCS visualizer is live (estimates clearly flagged).', 'color:#c5a36e');
+      console.log('%c[THE FELON] Milestones 1–8 complete. Combat record fully interactive.', 'color:#ef4444');
     }
 
     window.onload = bootstrap;
