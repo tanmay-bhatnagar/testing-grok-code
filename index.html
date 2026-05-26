@@ -666,6 +666,29 @@
     </div>
   </section>
 
+  <!-- GALLERY + LIGHTBOX (MILESTONE 9) -->
+  <section id="gallery" class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16 border-t border-[#22262e]">
+    <div>
+      <div class="section-label mb-3">CHAPTER 06</div>
+      <h2 class="section-header font-semibold tracking-tighter mb-3">In the Lens</h2>
+      <p class="max-w-2xl text-[#c8c5be] mb-8">Authentic high-resolution photographs from MAKS airshows and Russian aerospace events. All images are direct links from Wikimedia Commons with proper licensing and attribution.</p>
+
+      <!-- Masonry Gallery -->
+      <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4" id="gallery-grid">
+        <!-- Populated by JS for lightbox -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Elegant Pure-JS Lightbox -->
+  <div id="lightbox" class="hidden fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4">
+    <div class="max-w-5xl w-full relative">
+      <button id="lightbox-close" class="absolute -top-10 right-0 text-white text-3xl hover:text-[#c5a36e]">&times;</button>
+      <img id="lightbox-img" class="w-full max-h-[82vh] object-contain rounded-xl" alt="">
+      <div id="lightbox-caption" class="mt-4 text-sm text-[#c8c5be] flex justify-between items-center"></div>
+    </div>
+  </div>
+
   <!-- FOOTER / STATUS -->
   <footer class="border-t border-[#22262e] bg-[#050505]">
     <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-12 text-sm">
@@ -1367,13 +1390,87 @@
 
         if (russia) russia.addEventListener('click', () => {
           document.querySelector('#combat-filters button[data-filter="all"]').click();
-          renderCombatEvents('RUSSIA'); // simple filter by location text
+          renderCombatEvents('RUSSIA');
         });
         if (ukraine) ukraine.addEventListener('click', () => renderCombatEvents('UKRAINE'));
         if (syria) syria.addEventListener('click', () => renderCombatEvents('SYRIA'));
       }
 
       console.log('%c[THE FELON] Milestone 8: Combat record + filterable events + map initialized', 'color:#ef4444');
+    }
+
+    // ============================================
+    // MILESTONE 9: GALLERY + ELEGANT LIGHTBOX
+    // ============================================
+    const galleryImages = [
+      { src: "https://upload.wikimedia.org/wikipedia/commons/3/35/MAKS_Airshow_2019_(2019-08-30)_303.jpg", credit: "Krassotkin / Wikimedia Commons (CC0)", caption: "Su-57 in flight during MAKS 2019 airshow" },
+      { src: "https://upload.wikimedia.org/wikipedia/commons/b/be/PAK_FA_Prandtl_Glauert_singularity.jpg", credit: "Rulexip / Wikimedia Commons (CC BY-SA 3.0)", caption: "Su-57 creating vapor cone during high-G maneuver at MAKS 2015" },
+      { src: "https://upload.wikimedia.org/wikipedia/commons/4/40/T-50_PAK_FA_-_MAKS-2013Firstpixflights02.jpg", credit: "Vitaly V. Kuzmin / Wikimedia Commons (CC BY-SA 4.0)", caption: "Su-57 prototype in flight — MAKS 2013" },
+      { src: "https://upload.wikimedia.org/wikipedia/commons/5/5b/Su-57_052_and_Su-57_051_in_MAKS_2019.jpg", credit: "President of Russia / Wikimedia Commons (CC BY 4.0)", caption: "Two Su-57s (051 & 052) preparing for takeoff at MAKS 2019" },
+      { src: "https://upload.wikimedia.org/wikipedia/commons/e/e2/F-22_Raptor_edit1.jpg", credit: "U.S. Air Force / Public Domain", caption: "Lockheed Martin F-22 Raptor (for comparison)" },
+      { src: "https://upload.wikimedia.org/wikipedia/commons/f/f7/Two_J-20s_at_CCAS2022_(20220827103601).jpg", credit: "N509FZ / Wikimedia Commons", caption: "Chengdu J-20 pair in formation at CCAS 2022 (for comparison)" }
+    ];
+
+    function initGallery() {
+      const grid = document.getElementById('gallery-grid');
+      if (!grid) return;
+
+      grid.innerHTML = '';
+
+      galleryImages.forEach((img, index) => {
+        const div = document.createElement('div');
+        div.className = 'gallery-item break-inside-avoid cursor-pointer';
+        div.innerHTML = `
+          <img src="${img.src}" class="w-full rounded-2xl border border-[#22262e] hover:border-[#c5a36e] transition" alt="${img.caption}">
+          <div class="text-[10px] text-[#666] mt-1.5 px-1">${img.credit.split(' / ')[0]}</div>
+        `;
+        div.addEventListener('click', () => openLightbox(index));
+        grid.appendChild(div);
+      });
+
+      // Lightbox controls
+      const lb = document.getElementById('lightbox');
+      const closeBtn = document.getElementById('lightbox-close');
+      const imgEl = document.getElementById('lightbox-img');
+
+      closeBtn.addEventListener('click', closeLightbox);
+      lb.addEventListener('click', (e) => { if (e.target === lb) closeLightbox(); });
+
+      document.addEventListener('keydown', (e) => {
+        if (lb.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') {
+          const current = parseInt(imgEl.dataset.index || '0');
+          openLightbox((current + 1) % galleryImages.length);
+        }
+        if (e.key === 'ArrowLeft') {
+          const current = parseInt(imgEl.dataset.index || '0');
+          openLightbox((current - 1 + galleryImages.length) % galleryImages.length);
+        }
+      });
+
+      console.log('%c[THE FELON] Milestone 9: Gallery + lightbox initialized with 6 real Wikimedia images', 'color:#c5a36e');
+    }
+
+    function openLightbox(index) {
+      const lb = document.getElementById('lightbox');
+      const imgEl = document.getElementById('lightbox-img');
+      const cap = document.getElementById('lightbox-caption');
+      const data = galleryImages[index];
+
+      imgEl.src = data.src;
+      imgEl.dataset.index = index;
+      cap.innerHTML = `<div>${data.caption}<br><span class="text-[#666] text-xs">${data.credit}</span></div>
+                       <div class="text-xs text-[#c5a36e]">USE ← → ARROWS • ESC TO CLOSE</div>`;
+
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+    }
+
+    function closeLightbox() {
+      const lb = document.getElementById('lightbox');
+      lb.classList.add('hidden');
+      lb.classList.remove('flex');
     }
 
     // Boot everything
@@ -1388,9 +1485,10 @@
       initRivalComparator();
       initRCSVisualizer();
       initCombatRecord();
+      initGallery();
 
       // Mark milestone ready
-      console.log('%c[THE FELON] Milestones 1–8 complete. Combat record fully interactive.', 'color:#ef4444');
+      console.log('%c[THE FELON] Milestones 1–9 complete. Gallery + keyboard lightbox live.', 'color:#c5a36e');
     }
 
     window.onload = bootstrap;
