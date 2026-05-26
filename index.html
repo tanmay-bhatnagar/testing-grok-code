@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE FELON — Sukhoi Su-57 | Open-Source Investigation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
+    
+    :root {
+      --gold: #c5a36e;
+      --cyan: #4aa3e0;
+    }
+    
+    body {
+      font-family: 'Inter', system_ui, sans-serif;
+    }
+    
+    .display-serif {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    .cinematic-bg {
+      background-color: #050505;
+    }
+
+    .section-header {
+      font-size: clamp(2.25rem, 5vw, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+    }
+
+    .gold-accent {
+      color: #c5a36e;
+    }
+
+    .data-cyan {
+      color: #4aa3e0;
+    }
+
+    .premium-card {
+      background-color: #0a0c10;
+      border: 1px solid #22262e;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                  box-shadow 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
+                  border-color 0.3s ease;
+    }
+
+    .premium-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      border-color: #333842;
+    }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.2s ease;
+    }
+    
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 1px;
+      bottom: -2px;
+      left: 0;
+      background-color: #c5a36e;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .hero-image {
+      transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .stat-number {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .editorial-text {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #c8c5be;
+    }
+
+    .flag-badge {
+      font-size: 0.65rem;
+      letter-spacing: 0.5px;
+      padding: 1px 7px;
+      border-radius: 9999px;
+      background-color: #3f2a1e;
+      color: #c5a36e;
+      border: 1px solid #5c4633;
+      font-weight: 600;
+    }
+
+    .fact-strip {
+      background: linear-gradient(to right, #0a0c10, #111317);
+      border-top: 1px solid #22262e;
+      border-bottom: 1px solid #22262e;
+    }
+
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(to right, #c5a36e, #4aa3e0);
+      z-index: 60;
+      transition: width 0.05s ease-out;
+    }
+
+    .cinematic-grain {
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 3px 3px;
+      pointer-events: none;
+    }
+
+    .felon-title {
+      font-size: clamp(3.8rem, 9vw, 7.5rem);
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+      font-weight: 700;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 2.5px;
+      font-weight: 600;
+      color: #c5a36e;
+      text-transform: uppercase;
+    }
+
+    .military-grid {
+      background-image: 
+        linear-gradient(#22262e 1px, transparent 1px),
+        linear-gradient(90deg, #22262e 1px, transparent 1px);
+      background-size: 38px 38px;
+      opacity: 0.4;
+    }
+
+    .data-value {
+      font-feature-settings: "tnum";
+    }
+  </style>
+</head>
+<body class="cinematic-bg text-[#e8e6e1] overflow-x-hidden">
+  <!-- Scroll Progress -->
+  <div id="scroll-progress" class="scroll-progress w-0" style="width: 0%"></div>
+
+  <!-- Fixed Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-[#050505]/95 backdrop-blur-xl border-b border-[#22262e]">
+    <div class="max-w-screen-2xl mx-auto">
+      <div class="px-8 py-5 flex items-center justify-between">
+        <div class="flex items-center gap-x-3">
+          <div class="flex items-center gap-x-2.5">
+            <div class="w-7 h-7 rounded bg-[#c5a36e] flex items-center justify-center">
+              <span class="text-[#050505] text-[15px] font-bold tracking-[-1.5px]">F</span>
+            </div>
+            <div>
+              <span class="font-semibold tracking-[-0.5px] text-xl">THE FELON</span>
+            </div>
+          </div>
+          <div class="px-3 py-1 rounded-full bg-[#111317] text-[10px] font-mono tracking-[1px] text-[#c5a36e] border border-[#22262e]">SU-57</div>
+        </div>
+
+        <div class="hidden md:flex items-center gap-x-9 text-sm font-medium">
+          <a href="#program" class="nav-link text-[#a1a1aa] hover:text-white">THE PROGRAM</a>
+          <a href="#anatomy" class="nav-link text-[#a1a1aa] hover:text-white">ANATOMY</a>
+          <a href="#stealth" class="nav-link text-[#a1a1aa] hover:text-white">STEALTH</a>
+          <a href="#rivals" class="nav-link text-[#a1a1aa] hover:text-white">RIVALS</a>
+          <a href="#combat" class="nav-link text-[#a1a1aa] hover:text-white">COMBAT</a>
+          <a href="#gallery" class="nav-link text-[#a1a1aa] hover:text-white">IN THE LENS</a>
+        </div>
+
+        <div class="flex items-center gap-x-3">
+          <a href="RESEARCH.md" target="_blank" 
+             class="hidden sm:flex items-center gap-x-2 px-4 py-2 text-xs font-semibold rounded-full border border-[#22262e] hover:bg-[#111317] transition-colors">
+            <i class="fa-solid fa-book text-[#c5a36e]"></i>
+            <span class="text-[#a1a1aa]">RESEARCH DOSSIER</span>
+          </a>
+          <div class="px-3 py-1.5 text-[10px] font-mono bg-[#111317] border border-[#22262e] rounded text-[#c5a36e] tracking-widest">
+            DEV
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="relative h-[100dvh] min-h-[720px] flex items-center justify-center pt-16 overflow-hidden">
+    <!-- Hero Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img 
+        src="https://upload.wikimedia.org/wikipedia/commons/3/35/MAKS_Airshow_2019_(2019-08-30)_303.jpg" 
+        alt="Sukhoi Su-57 in flight at MAKS 2019 airshow — high-resolution photograph by Krassotkin (CC0)"
+        class="hero-image w-full h-full object-cover object-center brightness-[0.65] contrast-[1.05]"
+        id="hero-img"
+      >
+      <!-- Dark cinematic overlays -->
+      <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/80"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/30"></div>
+      <!-- Subtle grain -->
+      <div class="absolute inset-0 cinematic-grain"></div>
+    </div>
+
+    <div class="relative z-10 max-w-screen-2xl mx-auto px-6 md:px-12 text-center">
+      <div class="max-w-5xl mx-auto">
+        <!-- Classification badge -->
+        <div class="inline-flex items-center gap-x-2 mb-6 px-4 py-1 rounded-full bg-white/5 backdrop-blur border border-white/10 text-xs tracking-[2px] font-medium">
+          <div class="w-1.5 h-1.5 rounded-full bg-[#c5a36e] animate-pulse"></div>
+          <span>OPEN-SOURCE SYNTHESIS • MAY 2026</span>
+        </div>
+
+        <h1 class="felon-title text-white tracking-[-0.07em] leading-none mb-4">
+          THE FELON
+        </h1>
+        
+        <p class="text-2xl md:text-3xl text-white/90 font-light tracking-tight mb-3">
+          Sukhoi Su-57
+        </p>
+        
+        <p class="max-w-lg mx-auto text-lg md:text-xl text-[#c8c5be] mb-10">
+          Russia's fifth-generation stealth multirole fighter.<br>
+          An unvarnished investigation grounded in public data.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button onclick="document.getElementById('program').scrollIntoView({ behavior: 'smooth' })" 
+                  class="group inline-flex items-center justify-center gap-x-3 bg-[#c5a36e] hover:bg-[#d4b17d] active:bg-[#b38f5c] transition-all text-[#050505] font-semibold px-9 py-4 rounded-full text-sm tracking-widest">
+            BEGIN BRIEFING
+            <i class="fa-solid fa-arrow-down group-active:translate-y-0.5 transition"></i>
+          </button>
+          
+          <a href="#stealth" 
+             class="inline-flex items-center justify-center gap-x-3 border border-white/30 hover:bg-white/5 transition-colors px-7 py-4 rounded-full text-sm tracking-widest">
+            EXPLORE STEALTH CLAIMS
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-y-1 text-[10px] tracking-[2px] text-white/50">
+      <span>SCROLL TO BEGIN</span>
+      <i class="fa-solid fa-chevron-down text-xs animate-bounce"></i>
+    </div>
+
+    <!-- Image credit -->
+    <div class="absolute bottom-6 right-6 text-[10px] text-white/40 font-mono hidden lg:block">
+      PHOTO: KRASSOTKIN / WIKIMEDIA COMMONS (CC0)
+    </div>
+  </header>
+
+  <!-- INTELLIGENCE STRIP -->
+  <div class="fact-strip py-6">
+    <div class="max-w-screen-2xl mx-auto px-6 md:px-12">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-y-6 text-center md:text-left">
+        <div>
+          <div class="text-[#c5a36e] text-xs tracking-[1.5px] mb-1">FIRST FLIGHT</div>
+          <div class="text-2xl font-semibold tabular-nums">29 JAN 2010</div>
+        </div>
+        <div>
+          <div class="text-[#c5a36e] text-xs tracking-[1.5px] mb-1">SERVICE ENTRY</div>
+          <div class="text-2xl font-semibold">~2018–2020</div>
+          <div class="text-[10px] text-[#a1a1aa]">Limited initial operational capability</div>
+        </div>
+        <div>
+          <div class="text-[#c5a36e] text-xs tracking-[1.5px] mb-1">AIRFRAMES BUILT</div>
+          <div class="flex items-baseline justify-center md:justify-start gap-x-2">
+            <span class="text-2xl font-semibold">~42</span>
+            <span class="flag-badge text-[9px]">EST.</span>
+          </div>
+          <div class="text-[10px] text-[#a1a1aa]">Including prototypes (early 2026)</div>
+        </div>
+        <div>
+          <div class="text-[#c5a36e] text-xs tracking-[1.5px] mb-1">MAX SPEED</div>
+          <div class="text-2xl font-semibold">MACH 2.0</div>
+          <div class="text-[10px] text-[#a1a1aa]">Manufacturer claim • Supercruise ~M1.3 claimed</div>
+        </div>
+        <div class="col-span-2 md:col-span-1">
+          <div class="text-[#c5a36e] text-xs tracking-[1.5px] mb-1">PRIMARY OPERATOR</div>
+          <div class="text-2xl font-semibold">Russian Aerospace Forces</div>
+          <div class="text-[10px] text-[#a1a1aa]">~20–25 operational (open-source estimates)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE PROGRAM -->
+  <section id="program" class="max-w-screen-2xl mx-auto px-6 md:px-12 pt-20 pb-16">
+    <div class="max-w-4xl">
+      <div class="section-label mb-3">CHAPTER 01</div>
+      <h2 class="section-header font-semibold tracking-tighter mb-6">The Program</h2>
+      
+      <div class="editorial-text max-w-3xl space-y-5">
+        <p>The Sukhoi Su-57, NATO reporting name <span class="font-medium text-white">"Felon"</span>, is the first operational fifth-generation fighter developed by Russia under the PAK FA (Prospective Airborne Complex of Frontline Aviation) program.</p>
+        
+        <p>Conceived in the early 2000s as a response to the American F-22, the aircraft was intended to deliver a combination of supercruise, supermaneuverability, reduced radar signature, and advanced sensor fusion at a lower cost than its Western counterparts.</p>
+      </div>
+
+      <div class="mt-8 grid md:grid-cols-3 gap-4 text-sm">
+        <div class="premium-card p-5 rounded-2xl">
+          <div class="text-[#c5a36e] text-xs mb-1">KEY DEVELOPMENT MILESTONE</div>
+          <div class="font-semibold">2010 — First flight of T-50-1 prototype</div>
+          <div class="text-[#a1a1aa] mt-3 text-xs">The aircraft publicly debuted at MAKS 2011. Early flight testing revealed both impressive agility and significant challenges in engine reliability and manufacturing quality.</div>
+        </div>
+        <div class="premium-card p-5 rounded-2xl">
+          <div class="text-[#c5a36e] text-xs mb-1">PRODUCTION REALITY</div>
+          <div class="font-semibold">Slow ramp, limited numbers</div>
+          <div class="text-[#a1a1aa] mt-3 text-xs">As of early 2026, open-source reporting places total production (including prototypes) around 42 airframes. Sanctions, engine maturation delays, and the demands of the Ukraine conflict have constrained output.</div>
+        </div>
+        <div class="premium-card p-5 rounded-2xl border border-[#3f2a1e]">
+          <div class="flex items-center gap-2 text-[#c5a36e] text-xs mb-1">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            <span>SPECULATIVE</span>
+          </div>
+          <div class="font-semibold">Future variants &amp; export</div>
+          <div class="text-[#a1a1aa] mt-3 text-xs">Su-57M upgrades and the two-seat Su-57D are in testing. Algeria has publicly discussed acquiring the export Su-57E variant. Actual deliveries and timelines remain fluid.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANATOMY TEASER (Milestone 1 placeholder for full specs) -->
+  <section id="anatomy" class="border-t border-[#22262e] bg-[#0a0c10]">
+    <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16">
+      <div class="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+        <div class="lg:w-5/12">
+          <div class="section-label mb-3">CHAPTER 02</div>
+          <h2 class="section-header font-semibold tracking-tighter mb-5">Anatomy of the Felon</h2>
+          <p class="editorial-text max-w-lg">Twin-engine, single-seat stealth multirole fighter with internal weapons bays, thrust-vectoring engines, and a distinctive blend of Russian kinematic tradition with low-observable shaping.</p>
+          
+          <button onclick="document.getElementById('rivals').scrollIntoView({ behavior: 'smooth' })" 
+                  class="mt-8 text-sm flex items-center gap-x-2 text-[#c5a36e] hover:text-white group">
+            SEE HOW IT COMPARES TO F-22 &amp; J-20 
+            <i class="fa-solid fa-arrow-right group-hover:translate-x-0.5 transition"></i>
+          </button>
+        </div>
+
+        <div class="lg:w-7/12">
+          <div class="premium-card rounded-3xl p-8 md:p-10">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <div class="uppercase text-xs tracking-widest text-[#c5a36e]">CORE DIMENSIONS</div>
+                <div class="text-2xl font-semibold">20.1 m × 14.1 m</div>
+              </div>
+              <div class="text-right">
+                <div class="text-xs text-[#a1a1aa]">MAX TAKEOFF</div>
+                <div class="text-2xl font-semibold tabular-nums">35,000 <span class="text-base font-normal">kg</span></div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div class="border-l-2 border-[#c5a36e] pl-3">
+                <div class="text-[#a1a1aa] text-xs">ENGINES (CURRENT)</div>
+                <div class="font-medium mt-1">2× AL-41F1<br><span class="text-xs text-[#c5a36e]">3D thrust vectoring</span></div>
+              </div>
+              <div class="border-l-2 border-[#c5a36e] pl-3">
+                <div class="text-[#a1a1aa] text-xs">INTERNAL BAYS</div>
+                <div class="font-medium mt-1">2 large + 2 side<br><span class="text-xs text-[#c5a36e]">Stealth carriage</span></div>
+              </div>
+              <div class="border-l-2 border-[#c5a36e] pl-3">
+                <div class="text-[#a1a1aa] text-xs">COMBAT RADIUS</div>
+                <div class="font-medium mt-1">~1,250 km<br><span class="text-xs text-[#c5a36e]">Internal fuel</span></div>
+              </div>
+              <div class="border-l-2 border-[#c5a36e] pl-3">
+                <div class="text-[#a1a1aa] text-xs">G-LIMIT</div>
+                <div class="font-medium mt-1">+9.0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEALTH TEASER -->
+  <section id="stealth" class="max-w-screen-2xl mx-auto px-6 md:px-12 py-20 border-t border-[#22262e]">
+    <div class="max-w-3xl">
+      <div class="section-label mb-3">CHAPTER 03 — THE MOST CONTESTED CLAIM</div>
+      <h2 class="section-header font-semibold tracking-tighter mb-6">The Stealth Equation</h2>
+      
+      <div class="editorial-text space-y-6">
+        <p>The Su-57 incorporates planform alignment, serrated edges, radar-absorbent materials, and internal weapons bays. However, <span class="text-[#c5a36e] font-medium">every public figure regarding its radar cross-section is an estimate</span> — derived from patents, photography, and analyst interpretation. No independently verified measurement has been released.</p>
+      </div>
+
+      <div class="mt-6 inline-flex items-center gap-2 px-5 py-3 bg-[#111317] border border-[#3f2a1e] rounded-2xl text-sm">
+        <span class="flag-badge">ESTIMATED</span>
+        <span class="text-[#c5a36e]">Frontal RCS commonly cited between <span class="font-semibold">0.1–1 m²</span></span>
+      </div>
+    </div>
+
+    <div class="mt-12 text-xs text-[#a1a1aa] max-w-md">
+      Full interactive RCS signature visualizer and detailed comparison with F-22 and J-20 arriving in Milestone 4.
+    </div>
+  </section>
+
+  <!-- RIVALS TEASER -->
+  <section id="rivals" class="bg-[#0a0c10] border-y border-[#22262e]">
+    <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16">
+      <div class="max-w-3xl">
+        <div class="section-label mb-3">CHAPTER 04</div>
+        <h2 class="section-header font-semibold tracking-tighter mb-5">Against the Peers</h2>
+        <p class="editorial-text">How does the Felon stack up against the Lockheed Martin F-22 Raptor and the Chengdu J-20? The answer depends heavily on which mission and which metrics matter most.</p>
+      </div>
+
+      <div class="mt-10 grid md:grid-cols-3 gap-4">
+        <div class="premium-card p-6 rounded-2xl">
+          <div class="uppercase tracking-widest text-xs text-[#4aa3e0]">UNITED STATES</div>
+          <div class="text-2xl font-semibold mt-1">F-22 Raptor</div>
+          <div class="mt-4 text-sm text-[#a1a1aa]">The benchmark for all-aspect stealth and sensor fusion. Production ended 2011. Small, elite fleet.</div>
+          <div class="mt-6 text-[10px] text-[#c5a36e]">STRENGTH: Lowest observable signature</div>
+        </div>
+        <div class="premium-card p-6 rounded-2xl">
+          <div class="uppercase tracking-widest text-xs text-[#4aa3e0]">CHINA</div>
+          <div class="text-2xl font-semibold mt-1">Chengdu J-20</div>
+          <div class="mt-4 text-sm text-[#a1a1aa]">Largest 5th-gen fleet in the world (300+). Long-range BVR specialist with rapid production rate.</div>
+          <div class="mt-6 text-[10px] text-[#c5a36e]">STRENGTH: Numbers &amp; missile reach</div>
+        </div>
+        <div class="premium-card p-6 rounded-2xl border-[#c5a36e]/30">
+          <div class="uppercase tracking-widest text-xs text-[#c5a36e]">RUSSIA</div>
+          <div class="text-2xl font-semibold mt-1">Su-57 Felon</div>
+          <div class="mt-4 text-sm text-[#a1a1aa]">Supermaneuverable multirole platform with side-looking sensors and flexible payload. Smallest fleet.</div>
+          <div class="mt-6 text-[10px] text-[#c5a36e]">TRADE-OFF: Higher observability for agility</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMBAT + GALLERY TEASERS -->
+  <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-20 grid md:grid-cols-2 gap-x-12 gap-y-16">
+    <div id="combat">
+      <div class="section-label mb-3">CHAPTER 05</div>
+      <h3 class="text-3xl font-semibold tracking-tight mb-4">Combat Record</h3>
+      <p class="text-[#c8c5be]">Limited employment in Syria (2018) and Ukraine (2022–present). Russia has used the type primarily for standoff missile launches rather than deep penetration of contested airspace.</p>
+      <div class="mt-4 flex items-center gap-2">
+        <span class="flag-badge">OSINT NOTE</span>
+        <span class="text-xs text-[#a1a1aa]">Zero confirmed air-to-air victories or in-flight losses as of early 2026</span>
+      </div>
+    </div>
+
+    <div id="gallery">
+      <div class="section-label mb-3">CHAPTER 06</div>
+      <h3 class="text-3xl font-semibold tracking-tight mb-4">In the Lens</h3>
+      <p class="text-[#c8c5be]">Authentic high-resolution photography from MAKS airshows and Russian aerospace events — all sourced from Wikimedia Commons with proper licensing.</p>
+      <div class="mt-5 text-xs text-[#c5a36e]">Full interactive gallery with lightbox coming in Milestone 6.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER / STATUS -->
+  <footer class="border-t border-[#22262e] bg-[#050505]">
+    <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-12 text-sm">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-y-6">
+        <div>
+          <div class="font-semibold tracking-tight">THE FELON — Work in Progress</div>
+          <div class="text-[#a1a1aa] text-xs mt-1">All content on <span class="font-mono">dev</span> branch • Research &amp; design committed</div>
+        </div>
+        
+        <div class="text-xs text-[#a1a1aa] max-w-md">
+          This is an open-source synthesis. No classified information is presented. 
+          Every estimate and unconfirmed claim will be explicitly flagged in the final experience.
+          <span class="block mt-2 text-[#c5a36e]">Images: Wikimedia Commons (various CC0 / CC BY-SA / public domain)</span>
+        </div>
+      </div>
+      
+      <div class="mt-10 pt-6 border-t border-[#1f2229] text-[10px] text-[#555] flex flex-wrap gap-x-5">
+        <div>MILESTONE 1 COMPLETE — HERO + SHELL + NAV</div>
+        <div>TESTED IN BROWSER</div>
+        <div class="font-mono">COMMIT PENDING</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Tailwind script configuration
+    function initTailwind() {
+      document.documentElement.style.setProperty('--accent-gold', '#c5a36e');
+    }
+
+    // Scroll progress bar
+    function initScrollProgress() {
+      const progress = document.getElementById('scroll-progress');
+      
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progress.style.width = `${Math.min(scrollPercent, 100)}%`;
+      });
+    }
+
+    // Subtle mouse parallax on hero image
+    function initHeroParallax() {
+      const heroImg = document.getElementById('hero-img');
+      if (!heroImg) return;
+
+      const container = heroImg.parentElement;
+
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        
+        const moveX = x * -12;
+        const moveY = y * -12;
+        
+        heroImg.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.015)`;
+      });
+
+      container.addEventListener('mouseleave', () => {
+        heroImg.style.transform = 'translate(0, 0) scale(1)';
+      });
+    }
+
+    // Smooth scroll enhancement for all anchor links
+    function initSmoothAnchors() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href').substring(1);
+          const target = document.getElementById(targetId);
+          
+          if (target) {
+            e.preventDefault();
+            const navHeight = 70;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.scrollY - navHeight;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    }
+
+    // Keyboard escape hint (future lightbox ready)
+    function initKeyboardHints() {
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+          e.preventDefault();
+          const program = document.getElementById('program');
+          if (program) program.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+      
+      // Easter egg: press "?" to highlight all estimated content
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '?') {
+          document.querySelectorAll('.flag-badge').forEach(el => {
+            el.style.transitionDuration = '80ms';
+            el.style.backgroundColor = '#5c4633';
+            setTimeout(() => {
+              el.style.backgroundColor = '#3f2a1e';
+            }, 1400);
+          });
+        }
+      });
+    }
+
+    // Basic accessibility + reduced motion respect
+    function initAccessibility() {
+      // Respect prefers-reduced-motion for any future heavy animations
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (mediaQuery.matches) {
+        document.documentElement.style.setProperty('--motion-duration', '0ms');
+      }
+    }
+
+    // Boot everything
+    function bootstrap() {
+      initTailwind();
+      initScrollProgress();
+      initHeroParallax();
+      initSmoothAnchors();
+      initKeyboardHints();
+      initAccessibility();
+
+      // Mark milestone ready
+      console.log('%c[THE FELON] Milestone 1 shell initialized. All interactions ready.', 'color:#555');
+    }
+
+    window.onload = bootstrap;
+  </script>
+</body>
+</html>
